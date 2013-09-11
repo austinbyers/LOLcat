@@ -1,0 +1,87 @@
+lolcat: The LOLCODE Python Translator. (c) Austin Byers, 2013
+Please Note: This implementation of LOLCODE is slightly different than the original
+(and henceforth, 'LOLCODE' refers to THIS implementation). Visit LOLCODE.com for the 'official' documentation.
+
+Usage: lolcat --help | lolcat [Source File] | lolcat [Source File] [Destination File]
+For example: $ ./lolcat source.lol translation.py
+
+--------------------------- OHAI! -------------------------- 
+
+The lolcat parser translates each line of the LOLCODE into Python code, which it stores as a string in memory.
+All whitespace, except newlines and space between words, is ignored.
+If only the source file is specified, the parser will execute the code contained therein and quit.
+Otherwise, the parser will NOT execute the program, but will write the translated python file to the specfied destination.
+
+The goal of writing this program was to be able to catch all syntax errors BEFORE running/writing the translated python code.
+This is accomplished with a finite state automata. Every token that is read causes the parser to go to a different state,
+and there are only a finite number of possible states that can be reached from any point in the parsing.
+
+LOLCODE is Turing complete, although it's a bit cumbersome to use. (This entire project was completed in 3 days for
+a computer science final, so I only had to time to implement the very basics of the language!) Most notably,
+there are no functions, only methods, because return values aren't supported. Instead, global variables can be used
+to communicate across methods. (True programmers should be twitching violently after reading that last sentence!)
+There also aren't any loops (that's what recursion is for!)
+
+The Parser class that is implemented was designed to enable some degree of universality. After all, every parser
+has to check for unfinished statements and keep track of variable types, function names, comments, etc.
+The Parser class is the heart of the program, and this organization makes it relatively straightforward to add support
+for more keywords and improve the functionality of the language, if anyone ever wanted to take lolcat to the next level.
+
+------------------- KEWYWORD SUMMARY -------------------
+HAI / KTHXBYE
+HOW DUZ I method_name ? / GTFO / IF U SAY SO
+IZ value OP value ?
+BIGR THAN, SMALLR THAN, or LIEK
+YARLY / NOWAI / KTHX
+WIN / FAIL
+PLUS / MINUS / TIEMZ / DIVIED
+I HAS A variable ITZ value
+LOL variable IZ NOW new_value
+BTW or OBTW/TLDR
+
+------------------- CONTROL FLOW -------------------
+All LOLCODE programs must begin with 'HAI' and end with 'KTHXBYE' This is very important -
+if you do not properly greet the lolcat, he will hiss and spit hairballs at you. While shredding all of your toilet paper. o_O
+
+Methods are defined with 'HOW DUZ I method_name ?' Lolcat is an inquistive creature,
+and all questions  must actually end in a question mark (separated by a space). Methods are closed with 'IF U SAY SO'
+Methods cannot return values (though this could be easily implemented in future versions), but they can modify
+global variables or variables within their own scope. And you can always 'GTFO' of a method early, you pansy.
+
+'If' statements look like: 'IZ value OP value ?' where 'value' can be any TROOF, YARN, NUMBAR, math expression
+involving NUMBARS, or previously defined variable. 'OP' can be 'BIGR THAN' (>), 'SMALLR THAN' (<), or 'LIEK' (==)
+The if statement must be followed by a 'YARLY' and/or a 'NOWAI' (i.e. else) block. These blocks must be closed with 
+'KTHX', although they may otherwise be empty.
+
+------------------- TYPES and VARIABLES -------------------
+There are three types: TROOF (bool), which can have the value of 'WIN' or 'FAIL'; YARN (string); NUMBAR (int/float)
+and a VAR (which just represents one of these types). Types are not declared - they are inferred by the purrser.
+The types cannot explicitly be changed, but a reassignment of a variable will also reassign that variable's type.
+A variable is cheerfully declared by 'I HAS A varname ITZ value' where 'value' can be of any type or numeric expression.
+A variable is reassigned with 'LOL varname IZ NOW newvalue' These actually translate to the same Python statement, but the
+difference is stressed both for readibility of the LOLCODE and for the user's safety - if the user tries to re-assign
+a variable that is outside of the current function, Python creates a local copy, and the change will NOT carry over.
+But lolcat is nicer than python, and he will kindly inform the programmer of their stupidity.
+
+Math expressions take the form 'value OPERATOR value OPERATOR value...' and support the operators
+PLUS, MINUS, TIEMZ, and DIVIED. Of course, lolcat will complain if the user tries to add non-numeric types.
+
+------------------- INPUT and OUTPUT -------------------
+Printing to stdout is done with 'U SEEZ value'. (Currently, string operations are not supported)
+Getting input from the user looks like 'GIMMEH varname.' LOLCODE specifies input to be a 'float' by default.
+
+------------------- COMMENTS -------------------
+'BTW' causes the rest of the current line to be ignored by the compiler. OBTW and TLDR, respectively, specify
+the start and end of a multi-line commment block. Anything in a comment is directly copied to the (optional) output file.
+
+------------------- PARSER ERRORS -------------------
+There are basically three kinds of errors:
+WTF errors are thrown when the parser encounters an unrecognized token. This means you don't know what the hell you're doing.
+OMG errors are thrown when the parser encounters an unexpected End of Line. This means you should go home and come back tomorrow.
+ROTFLOL errors are thrown when the parser encounters an unexpected End of File. This means you are a humiliating failure.
+
+------------------- KTHXBYE! -----------------------
+OMG, If u read this far, u need a life. LOL 
+
+  :) Austin (:
+

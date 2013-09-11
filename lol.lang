@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ Original Author: Sébastien Lavoie <lavoiseb@iro.umontreal.ca>
+ Modified By    : Austin Byers
+ On my system, this file should be copied to:
+	/usr/share/gtksourceview-3.0/language-specs/lolcode.lang
+-->
+
+<language id="lolcode" _name="LolCode" version="2.0" _section="Scripts">
+  <metadata>
+    <property name="mimetypes">text/lolcode</property>
+    <property name="globs">*.lol</property>
+    <property name="line-comment-start">BTW</property>
+    <property name="block-comment-start">OBTW</property>
+    <property name="block-comment-end">TLDR</property>
+  </metadata>
+ 
+  <styles>
+    <style id="comment" _name="Comment" map-to="def:comment"/>
+    <style id="error" _name="Error" map-to="def:error"/>
+    <style id="escape" _name="Escaped Character" map-to="def:special-char"/>
+    <style id="string" _name="String" map-to="def:string"/>
+    <style id="keyword" _name="Keyword" map-to="def:keyword"/>
+    <style id="operator" _name="Operator" map-to="def:operator"/>
+    <style id="type" _name="Data Type" map-to="def:type"/>
+    <style id="null-value" _name="Null Value" map-to="def:special-constant"/>
+    <style id="boolean" _name="Boolean value" map-to="def:boolean"/>
+    <style id="floating-point" _name="Floating point number" map-to="def:floating-point"/>
+    <style id="decimal" _name="Decimal number" map-to="def:decimal"/>
+  </styles>
+ 
+  <definitions>
+ 
+    <context id="cpp-line-comment" style-ref="comment" end-at-line-end="true" extend-parent="false">
+      <start>BTW</start>
+      <include>
+        <context ref="def:in-line-comment"/>
+      </include>
+    </context>
+ 
+    <context id="c-block-comment" style-ref="comment">
+      <start>OBTW</start>
+      <end>TLDR</end>
+      <include>
+        <context ref="def:in-line-comment"/>
+      </include>
+    </context>
+ 
+    <context id="close-comment-outside-comment" style-ref="error">
+      <match>TLDR(?!TLDR)</match>
+    </context>
+ 
+    <context id="escape" style-ref="escape">
+		<match extended="true">
+		\\(                 # leading backslash
+        [\\'"nt]     | # single escaped char
+		)
+		</match>
+    </context>
+ 
+    <context id="double-quoted-string" style-ref="string" end-at-line-end="true">
+      <start>"</start>
+      <end>"</end>
+      <include>
+        <context ref="escape"/>
+      </include>
+    </context>
+ 
+    <context id="keywords" style-ref="keyword">
+	<keyword>HOW DUZ I</keyword>
+	<keyword>IF U SAY SO</keyword>
+	<keyword>PLUS</keyword>
+	<keyword>MINUS</keyword>
+	<keyword>TIEMZ</keyword>
+	<keyword>DIVIED</keyword>
+	<keyword>IZ</keyword>
+	<keyword>BIGR THAN</keyword>
+	<keyword>SMALLR THAN</keyword>
+	<keyword>LIEK</keyword>
+	<keyword>YARLY</keyword>
+	<keyword>NOWAI</keyword>
+	<keyword>KTHX</keyword>
+	<keyword>NOW</keyword>
+	  <!-- Other keywords that could be implemented:
+	<keyword>FOUND YR</keyword>
+	  <keyword>AN</keyword>
+      <keyword>MKAY</keyword>
+      <keyword>MOD OF</keyword>
+      <keyword>BOTH OF</keyword>
+      <keyword>EITHER OF</keyword>
+      <keyword>WON OF</keyword>
+      <keyword>ALL OF</keyword>
+      <keyword>ANY OF</keyword>
+      <keyword>NOT</keyword>
+      <keyword>BOTH SAEM</keyword>
+      <keyword>DIFFRINT</keyword>
+      <keyword>SMOOSH</keyword>
+      <keyword>R</keyword>
+      <keyword>A</keyword>
+      <keyword>EXCL</keyword>
+      <keyword>NUMBR</keyword>
+      <keyword>NUMBAR</keyword>
+      <keyword>VAR</keyword>
+      <keyword>YARN</keyword>
+      <keyword>BR</keyword>
+      <keyword>MAEK</keyword>
+      <keyword>O RLY?</keyword>
+      <keyword>OIC</keyword>
+      <keyword>MEBBE</keyword>
+      <keyword>WTF?</keyword>
+      <keyword>OMG</keyword>
+      <keyword>OMGWTF</keyword>
+      <keyword>IM IN YR</keyword>
+      <keyword>IM OUTTA YR</keyword>
+      <keyword>YR</keyword>
+      <keyword>TIL</keyword>
+      <keyword>WILE</keyword>
+      <keyword>UPPIN</keyword>
+      <keyword>NERFIN</keyword>
+		-->
+    </context>
+ 
+    <context id="operators" style-ref="operator" extend-parent="false">
+      <match>[\?]</match>
+    </context>
+ 
+    <context id="type" style-ref="type">
+	<keyword>U SEEZ</keyword>
+	<keyword>I HAS A</keyword>
+	<keyword>ITZ</keyword>
+	<keyword>GIMMEH</keyword>
+	<keyword>LOL</keyword>
+	<keyword>GTFO</keyword>
+	<!-- Types that could be referenced explicitly:
+      <keyword>BUCKET</keyword>
+      <keyword>TROOF</keyword>
+      <keyword>NUMBR</keyword>
+      <keyword>NUMBAR</keyword>
+      <keyword>YARN</keyword>
+      <keyword>NOOB</keyword>
+	-->
+    </context>
+ 
+    <context id="boolean" style-ref="boolean">
+      <keyword>FAIL</keyword>
+      <keyword>WIN</keyword>
+    </context>
+ 
+    <context id="float" style-ref="floating-point">
+      <match extended="true">
+        (?&lt;![\w\.])
+        [+-]?([0-9]+[Ee][+-]?[0-9]+ |
+         ([0-9]*\.[0-9]+ | [0-9]+\.[0-9]*)([Ee][+-]?[0-9]+)?)
+        (?![\w\.])
+      </match>
+    </context>
+ 
+    <context id="decimal-number" style-ref="decimal">
+      <match extended="true">
+        (?&lt;![\w\.])
+        [+-]?([1-9][0-9]*|0)
+        (?![\w\.])
+      </match>
+    </context>
+ 
+    <context id="lol-block">
+      <start>HAI</start>
+      <end>KTHXBYE</end>
+      <include>
+        <context sub-pattern="0" where="start" style-ref="keyword"/>
+        <context sub-pattern="0" where="end" style-ref="keyword"/>
+        <context ref="cpp-line-comment"/>
+        <context ref="c-block-comment"/>
+        <context ref="double-quoted-string"/>
+        <context ref="keywords"/>
+        <context ref="operators"/>
+        <context ref="type"/>
+        <context ref="boolean"/>
+        <context ref="float"/>
+        <context ref="decimal-number"/>
+      </include>
+    </context>
+ 
+    <replace id="html:embedded-lang-hook" ref="lol-block"/>
+ 
+    <context id="lolcode">
+      <include>
+        <context ref="lol-block"/>
+        <context ref="html:html"/>
+      </include>
+    </context>
+ 
+  </definitions>
+</language>
